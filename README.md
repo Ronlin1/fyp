@@ -87,12 +87,14 @@ Sending a request using a method other than POST (e.g., GET) will result in a `4
 ```
 /
 |-- app.py             # Flask application code
-|-- model.pkl          # Serialized trained XGBoost model
+|-- xgboost_model.json # dumped trained XGBoost model
 |-- requirements.txt   # Python dependencies
 |-- static/            # Optional: For static files like XAI images
 |   |-- shap_XGBoost.png
 |   |-- lime_XGBoost.html 
 |-- templates/         # Optional: For HTML templates if serving web pages
+|-- test.py            # Test application code
+|-- dummy_rain.csv     # Dummy data for testing
 |-- README.md          # This file
 ```
 
