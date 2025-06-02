@@ -6,7 +6,7 @@ url = "http://localhost:5000/predict"
 
 # Data from your CSV (example: first row )
 data = {
-    "r1h": 4.0,
+    "r1h": 14.0,
     "r1h_avg": 3.8,
     "r3h": 6.0,
     "r3h_avg": 5.9,

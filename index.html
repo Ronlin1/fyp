@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-gray-50">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Model API Tester</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+    </style>
+  </head>
+  <body class="h-full flex items-center justify-center">
+    <div class="w-full max-w-xl mx-auto p-6 bg-white rounded-2xl shadow-md">
+      <h1 class="text-2xl font-bold mb-4 text-center">🎓 Student Model API Tester</h1>
+
+      <form id="predictionForm" class="space-y-4">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700">r1h</label>
+            <input type="number" step="any" name="r1h" class="mt-1 p-2 w-full border border-gray-300 rounded-md" required />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">r1h_avg</label>
+            <input type="number" step="any" name="r1h_avg" class="mt-1 p-2 w-full border border-gray-300 rounded-md" required />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">r3h</label>
+            <input type="number" step="any" name="r3h" class="mt-1 p-2 w-full border border-gray-300 rounded-md" required />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">r3h_avg</label>
+            <input type="number" step="any" name="r3h_avg" class="mt-1 p-2 w-full border border-gray-300 rounded-md" required />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">rfq</label>
+            <input type="number" step="any" name="rfq" class="mt-1 p-2 w-full border border-gray-300 rounded-md" required />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">r1q</label>
+            <input type="number" step="any" name="r1q" class="mt-1 p-2 w-full border border-gray-300 rounded-md" required />
+          </div>
+        </div>
+
+        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">
+          Get Prediction
+        </button>
+      </form>
+
+      <div id="result" class="mt-6 hidden p-4 bg-gray-100 rounded-md text-center">
+        <p class="font-semibold text-gray-700">Prediction:</p>
+        <p id="predictionValue" class="text-xl font-bold text-blue-600 mt-2"></p>
+      </div>
+
+      <div id="error" class="mt-4 hidden text-red-600 text-center font-semibold"></div>
+
+      <p class="mt-6 text-xs text-gray-400 text-center">API running at <code>http://localhost:5000/predict</code></p>
+    </div>
+
+    <script>
+      const form = document.getElementById('predictionForm');
+      const resultDiv = document.getElementById('result');
+      const errorDiv = document.getElementById('error');
+      const predictionValue = document.getElementById('predictionValue');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        resultDiv.classList.add('hidden');
+        errorDiv.classList.add('hidden');
+        predictionValue.textContent = '';
+
+        const formData = new FormData(form);
+        const jsonData = {};
+        formData.forEach((value, key) => {
+          jsonData[key] = parseFloat(value);
+        });
+
+        try {
+          const response = await fetch('http://192.168.137.180:5000/predict', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(jsonData),
+          });
+
+          const data = await response.json();
+
+          if (response.ok && data.success) {
+            predictionValue.textContent = data.predictions.join(', ');
+            resultDiv.classList.remove('hidden');
+          } else {
+            errorDiv.textContent = data.error || 'An error occurred';
+            errorDiv.classList.remove('hidden');
+          }
+        } catch (err) {
+          errorDiv.textContent = 'Failed to connect to the API';
+          errorDiv.classList.remove('hidden');
+        }
+      });
+    </script>
+  </body>
+</html>
